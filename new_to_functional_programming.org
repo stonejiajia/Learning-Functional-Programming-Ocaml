@@ -1,0 +1,20 @@
+#+TITLE: new_to_functional_programming
+
+* Turing machine (图灵机)
+
+图灵机是 Alan Turing 在 1936 年发明的。 基本原型由一个存储带 （tape） 和 读写头
+构成。
+
+1. 存储带上符号初始化； 当前字母表：{1，b}  
+2. 设置好控制器的当前状态； 控制器状态集合
+   {q1, q2, q3}
+   控制器当前状态： q1  
+3. 读写头置于起始位置   
+4. 准备好工作程序       
+
+   
+   
+   
+
+* 什么是 Functional Programming (函数式编程)
+
