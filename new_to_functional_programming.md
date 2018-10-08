@@ -40,4 +40,3 @@ q1 1 1 R q1
 ## 什么是 Functional Programming (函数式编程)
 
 
-
