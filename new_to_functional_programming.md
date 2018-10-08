@@ -1,42 +1,137 @@
-# New to functional programming
+New to functional programming
+=============================
 
-## Turing machine (图灵机)
+Turing machine (图灵机)
+-----------------------
 
-图灵机是 Alan Turing 在 1936 年发明的。 基本原型由一个存储带 （tape） 和 读写头
-构成。
+图灵机是 Alan Turing 在 1936 年发明的。 基本原型由一个存储带 （tape） 和
+读写头 构成。
 
-1. 存储带上符号初始化； 当前字母表：{1，b}  
-2. 设置好控制器的当前状态； 控制器状态集合
-   {q1, q2, q3}
-   控制器当前状态： q1  
-3. 读写头置于起始位置   
-4. 准备好工作程序       
+1.  存储带上符号初始化； 当前字母表：{1，b}\
+2.  设置好控制器的当前状态； 控制器状态集合 {q1, q2, q3}
+    控制器当前状态： q1\
+3.  读写头置于起始位置\
+4.  准备好工作程序
 
-   ![](https://github.com/stonejiajia/Learning-Functional-Programming-Ocaml/blob/master/images/Screen%20Shot%202018-10-08%20at%2012.50.00%20AM.png?raw=true)
-   
-  
+<https://github.com/stonejiajia/Learning-Functional-Programming-Ocaml/blob/master/images/Screen%20Shot%202018-10-08%20at%2012.50.00%20AM.png?raw=true>
+
 ### 图灵机开始工作
-  
-  1. 读写头读出存储带上的方格中的字目/数字
-  2. 根据自身当前状态和所读到的字符，找到相应的程序语句
-  3. 根据相应的程序语句，做三个动作
 
-前两个是条件，后三个是动作。 
+1.  读写头读出存储带上的方格中的字目/数字
+2.  根据自身当前状态和所读到的字符，找到相应的程序语句
+3.  根据相应的程序语句，做三个动作
 
-q1 1 1 R q1
- 比如， 当前状态是q1, 现在的读写头读到的是 1，执行第一个动作： 写入 1， 执行第二个动作： 读写头向右移动， 再执行第三个步骤，机器转入什么状态。
- 
+前两个是条件，后三个是动作。
+
+q1 1 1 R q1 比如， 当前状态是q1, 现在的读写头读到的是
+1，执行第一个动作： 写入 1， 执行第二个动作： 读写头向右移动，
+再执行第三个步骤，机器转入什么状态。
+
 ### 图灵机停机意味着什么
-1. 停机表示计算完毕，表示当前存储带上保留的是 结算结果
-2. 也就说，停机意味这得出计算。
-3. 也就是说：对于一个问题的输入A, 问： A 能否推证出 B ，如果能找到一个图灵机，得出对应的符号序列B, 那么从 A 到 B 就是可计算的，否则，该问题不可计算。 
- 
+
+1.  停机表示计算完毕，表示当前存储带上保留的是 结算结果
+2.  也就说，停机意味这得出计算。
+3.  也就是说：对于一个问题的输入A, 问： A 能否推证出 B
+    ，如果能找到一个图灵机，得出对应的符号序列B, 那么从 A 到 B
+    就是可计算的，否则，该问题不可计算。
+
 ### 图灵机的意义
-1. 给出了一个课实现的通用计算模型。
-2. 引入了通过 “读写符号” 和 “状态改变” 进行运算的思想
-3. 说明简单字母能完成复杂的计算能力
-4. 引入了存储区，程序，控制器等概念原型。
 
-## 什么是 Functional Programming (函数式编程)
+1.  给出了一个课实现的通用计算模型。
+2.  引入了通过 “读写符号” 和 “状态改变” 进行运算的思想
+3.  说明简单字母能完成复杂的计算能力
+4.  引入了存储区，程序，控制器等概念原型。
 
+什么是 Functional Programming (函数式编程)
+------------------------------------------
+
+### 简单的例子
+
+首先看用 Java 是如何实现斐波那契的
+
+``` {.java}
+
+public class Factorial {
+    public static int compute(int n) {
+        int res = 1;
+        for (int c = 1; c <= n; c++)
+            res = res * c; 
+        return res;
+    }
+}
+
+```
+
+在看 Scheme 和 Ocaml 是怎么实现的
+
+``` {.ocaml}
+let rec fact = 
+  function n -> if n = 0 then 1 else n*(fact (n - 1))
+
+
+```
+
+``` {.ocaml}
+fact 3
+```
+
+``` {.scheme}
+(define (factorial n)
+  (if (= n 1)
+      1
+      (* n (factorial (- n 1))))
+
+```
+
+前者是很标准的处理方法，即 perform operations 和 take decision.
+而后两者用递归来 实现。区别在于 Functional programming
+是用来定义函数和组合起来去计算期望的结果。
+
+In a functional programming we define(possibly recursive) functions, and
+compose and apply them to compute the expected results.
+
+### Functional Programming 的由来
+
+由 Alonzo Church 在1936年提出，引入了 λ-calculus
+
+-   λx.M = nameless function with formal parameter x and body M
+-   MN = call function M with actual parameter N
+
+    Theoretical function of functional programming
+
+    (λx.M)N →β M\[x := N\]
+
+The β reduction rule is the one and only computational device in the
+system!
+
+上面这段是抄书的，一开始看的艰涩难懂，其实细细分析很简单的。
+
+### 如何理解 (λx.M)N →β M\[x := N\]
+
+其实公式也可以写成 (λx.xy) (ab)
+
+-   a b c.... 这些字母都是
+    Variable，一个表达式中可以有一个字母，也可以有多个字母。
+-   括号： （） 括号指表达式式一起的
+-   λ 这个希腊字母， 代表 lambda ,没什么特别含义,只是 Functions
+
+
+
+该过程 以 x 为参数 它加起 x 和4
+λ x . x 
+^---^  
+  |_______________ lambda 的头部(head), 由 . 来分割开。
+
+λ x . x 
+  ^_______________ lambda 的参数
+  
+λ x . x
+      ^___________ body , the expression the lambda returns when applied (当表达
+      式执行后返回的值) 
+      
+下面是 SICP 上简单的解释 λx.(x+4) 
+
+(lambda    (x)         (+        x      4))
+   |        |           |        |      |
+该过程    以 x 为参数   它加起    x      和4
 
