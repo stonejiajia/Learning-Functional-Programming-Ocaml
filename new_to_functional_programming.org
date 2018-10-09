@@ -141,3 +141,5 @@ The β reduction rule is the one and only computational device in the system!
    |        |           |        |      |
 该过程    以 x 为参数   它加起    x      和4
 
+
+

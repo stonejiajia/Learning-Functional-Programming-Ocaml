@@ -1,0 +1,202 @@
+#+TITLE: Ocaml_basic
+
+* Tuples List Options, and Pattern Matching
+
+** Tuples 
+
+Tuples 里有不同类型的元素
+
+#+BEGIN_SRC ocaml
+let a_tuple = (3,"three");;
+
+#+END_SRC
+
+#+RESULTS:
+: (3, "three")
+
+#+BEGIN_SRC ocaml ：results output
+let another_tuple = (3, "four", 5);;
+
+#+END_SRC
+
+#+RESULTS:
+: (3, "four", 5)
+
+
+Tuples using Ocaml's pattern-matching
+
+#+BEGIN_SRC ocaml :results output 
+let (x,y) = a_tuple;;
+#+END_SRC
+
+#+RESULTS:
+: val x : int = 3
+
+#+BEGIN_SRC ocaml
+x + String.length y;;
+#+END_SRC
+
+#+RESULTS:
+: 8
+
+Pattern matching can also show up in function arguments
+
+#+BEGIN_SRC ocaml
+let distance (x1, y1) (x2, y2) = 
+  sqrt ((x1 -. x2) ** 2. +. (y1 -. y2) ** 2.)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+RESULTS: 
+val distance : float * float -> float * float -> float = <fun>
+
+* List
+
+List 中的元素必须是相同的 Type
+
+#+BEGIN_SRC ocaml
+let languages = ["Ocaml";"perl";"C"];;
+
+#+END_SRC
+
+#+RESULTS:
+| Ocaml | perl | C |
+
+#+BEGIN_SRC ocaml
+let numbers = [3;"four";5];;
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 17-23:
+:   let numbers = [3;"four";5];;;;
+:                    ^^^^^^
+: Error: This expression has type string but an expression was expected of type
+:          int
+
+
+** The List module
+
+#+BEGIN_SRC ocaml
+
+List.length languages;;
+
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+
+#+BEGIN_SRC ocaml
+List.map languages ~f:String.length;;
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 22-35:
+:   List.map languages ~f:String.length;;;;
+:                         ^^^^^^^^^^^^^
+: Error: The function applied to this argument has type 'a list -> 'b list
+: This argument cannot be applied with label ~f
+
+Constructing lists with::
+#+BEGIN_SRC ocaml
+"French" :: "Spanish" :: languages;;
+
+#+END_SRC
+
+#+RESULTS:
+| French | Spanish | Ocaml | perl | C |
+
+注：
+List 用 ； 来分割元素
+Tuple 用 ， 来分割元素
+
+两个 List 连接用 @ 而不是 ::
+
+#+BEGIN_SRC ocaml
+[1;2;3] @ [4;5;6];;
+
+
+#+END_SRC
+
+#+RESULTS:
+| 1 | 2 | 3 | 4 | 5 | 6 |
+
+** List patterns using match
+
+#+BEGIN_SRC ocaml
+let my_favorite_language (my_favorite :: the_rest) = 
+  my_favorite
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+    Characters 25-67:
+  .........................(my_favorite :: the_rest) = 
+    my_favorite
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a case that is not matched:
+[]
+val my_favorite_language : 'a list -> 'a = <fun>
+
+
+这个类似于 Lisp 中的 cdr 和 car
+
+#+BEGIN_SRC emacs-lisp
+
+(car '(1 2 3))
+
+#+END_SRC
+
+#+RESULTS:
+: 1
+
+#+BEGIN_SRC emacs-lisp
+
+(cdr '(1 2 3 4))
+
+#+END_SRC
+
+#+RESULTS:
+| 2 | 3 | 4 |
+
+#+BEGIN_SRC ocaml
+my_favorite_language ["English";"Spanish";"French"];;
+
+#+END_SRC
+
+#+RESULTS:
+: English
+
+** Match 
+
+
+#+BEGIN_SRC ocaml
+
+let my_favorite_language languages = 
+  match languages with
+  | first :: the_rest -> first
+  | [] -> "Ocaml" (* A good default*)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+
+my_favorite_language ["English";"Spanish";"French"];;
+
+#+END_SRC
+
+#+RESULTS:
+: English
+
+** Recursive list functions
