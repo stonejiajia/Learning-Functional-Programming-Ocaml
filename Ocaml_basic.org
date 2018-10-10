@@ -2,6 +2,18 @@
 
 * Tuples List Options, and Pattern Matching
 
+#+BEGIN_SRC ocaml
+
+
+open Base;;
+#+END_SRC
+
+#+RESULTS:
+: Characters 7-11:
+:   open Base;;;;
+:        ^^^^
+: Error: Unbound module Base
+
 ** Tuples 
 
 Tuples 里有不同类型的元素
@@ -200,3 +212,244 @@ my_favorite_language ["English";"Spanish";"French"];;
 : English
 
 ** Recursive list functions
+
+
+#+BEGIN_SRC ocaml
+let rec sum l = 
+  match l with
+  | [] -> 0
+  | hd :: tl -> hd + sum tl
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+sum [1;2;3];; 
+
+#+END_SRC
+
+#+RESULTS:
+: 6
+
+#+BEGIN_SRC ocaml
+
+let rec destutter list = 
+  match list with
+  | [] -> []
+  | hd1 :: hd2 :: tl -> 
+     if hd1 = hd2 then destutter (hd2 :: tl)
+     else hd1 :: destutter (hd2 :: tl)
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let rec destutter list = 
+  match list with
+  | [] -> []
+  | [hd] -> [hd]
+  | hd1 :: hd2 :: tl ->
+     if hd1 = hd2 then destutter (hd2 :: tl)
+     else hd1 :: destutter (hd2 :: tl)
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+destutter ["hey";"hey";"hey";"man"]
+
+#+END_SRC
+
+#+RESULTS:
+| hey | man |
+
+** Options
+
+#+BEGIN_SRC ocaml
+let divide x y = 
+  if y = 0 then None else Some (x/y);;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+把 Options 想象成特殊的 List ，这 List 里最多只有一个元素。
+
+
+#+BEGIN_SRC ocaml
+open Core.Std;;
+
+let log_entry maybe_time message = 
+  let time = 
+    match maybe_time with
+    | Some x -> x
+    | None -> Time.now()
+  in 
+  Time.to_sec_string time ^ "__" ^ message
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 109-117:
+:       | None -> Time.now()
+:                 ^^^^^^^^
+: Error: Unbound module Time
+
+
+*** in 
+let 表达式中有 in 时，in 用来建立一个新的 scope（作用域）在 let 的作用域里。
+
+#+BEGIN_SRC ocaml
+let x = 7 in
+    x + x;;
+
+#+END_SRC
+
+#+RESULTS:
+: 14
+
+#+BEGIN_SRC ocaml
+x
+#+END_SRC
+
+#+RESULTS:
+: Characters 0-1:
+:   x;;
+:   ^
+: Error: Unbound value x
+
+** Records and Variants
+
+#+BEGIN_SRC ocaml
+
+type point2d = { x : float; y : float};;
+
+#+END_SRC
+
+#+RESULTS:
+: type point2d = { x : float; y : float; }
+
+#+BEGIN_SRC ocaml
+let p = { x = 3.; y = -4. };;
+
+#+END_SRC
+
+#+RESULTS:
+: {x = 3.; y = -4.}
+
+
+#+BEGIN_SRC ocaml
+let magnitude { x = x_pos; y = y_pos } =
+  sqrt (x_pos **2. +. y_pos ** 2.);;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+val magnitude : point2d -> float = <fun>
+
+field punning 可以跟简洁的写成这种形式。
+
+#+BEGIN_SRC ocaml
+let magnitude { x; y } = sqrt ( x ** 2. +. y ** 2.);;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+val magnitude : point2d -> float = <fun>
+
+#+BEGIN_SRC ocaml
+
+let distance v1 v2 = 
+  magnitude { x = v1.x -. v2.x; y = v1.y -. v2.y };;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+type circle_desc = { center: point2d; radius: float }
+type rect_desc = { lower_left: point2d; width: float; height: float }
+type segment_desc = { endpoint1: point2d; endpoint2: point2d };;
+
+#+END_SRC
+
+#+RESULTS:
+: type circle_desc = { center : point2d; radius : float; }
+: type rect_desc = { lower_left : point2d; width : float; height : float; }
+: type segment_desc = { endpoint1 : point2d; endpoint2 : point2d; }
+
+variant type 的方式把上面的三个 object 结合起来。
+
+#+BEGIN_SRC ocaml
+
+type sene_element =
+  | Circle  of circle_desc
+  | Rect    of rect_desc
+  | Segment of segment_desc
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: type sene_element =
+:     Circle of circle_desc
+:   | Rect of rect_desc
+:   | Segment of segment_desc
+
+
+“|” 分割不同的 Case, 每个 Case 都有一个 capitalized tag
+
+#+BEGIN_SRC ocaml
+
+let is_inside_scene_element point scene_element =
+  let open Float.O in
+  match scene_element with
+  | Circle { center; radius } ->
+    distance center point < radius
+  | Rect { lower_left; width; height } ->
+    point.x    > lower_left.x && point.x < lower_left.x + width
+    && point.y > lower_left.y && point.y < lower_left.y + height
+  | Segment { endpoint1; endpoint2 } -> false
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 62-69:
+:     let open Float.O in
+:              ^^^^^^^
+: Error: Unbound module Float
+
+val is_inside_scene_element : point2d -> sene_element -> bool = <fun>
+
+#+BEGIN_SRC ocaml
+let is_inside_scene point scene = 
+  List.exists scene
+    ~f:(fun el -> is_inside_scene_element point el)
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 62-106:
+:       ~f:(fun el -> is_inside_scene_element point el)
+:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+: Error: The function applied to this argument has type 'a list -> bool
+: This argument cannot be applied with label ~f
+
+
+
