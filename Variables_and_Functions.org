@@ -1,0 +1,35 @@
+#+TITLE: Variables_and_Functions
+
+
+#+BEGIN_SRC ocaml
+
+let x = 3;;
+
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+let <variable> = <expr1> in <expr2>
+
+#+BEGIN_SRC ocaml
+
+let languages = "OCaml, Perl, C++, C";;
+
+#+END_SRC
+
+#+RESULTS:
+: OCaml, Perl, C++, C
+
+
+#+BEGIN_SRC ocaml
+
+let dashed_languages = 
+  let language_list = String.split languages ~on:',' in
+  String.concat ~sep:"-" language_list
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: "OCaml- Perl- C++- C"

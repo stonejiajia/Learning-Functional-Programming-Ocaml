@@ -36,7 +36,7 @@ x + String.length y;;
 Pattern matching can also show up in function arguments
 
 ``` {.ocaml}
-let distance (x1, y1) (x2, y2) = 
+let distance (x1, y1) (x2, y2) =
   sqrt ((x1 -. x2) ** 2. +. (y1 -. y2) ** 2.)
 
 ```
@@ -94,7 +94,7 @@ List patterns using match
 -------------------------
 
 ``` {.ocaml}
-let my_favorite_language (my_favorite :: the_rest) = 
+let my_favorite_language (my_favorite :: the_rest) =
   my_favorite
 ;;
 
@@ -129,7 +129,7 @@ Match
 
 ``` {.ocaml}
 
-let my_favorite_language languages = 
+let my_favorite_language languages =
   match languages with
   | first :: the_rest -> first
   | [] -> "Ocaml" (* A good default*)
@@ -146,7 +146,7 @@ Recursive list functions
 ------------------------
 
 ``` {.ocaml}
-let rec sum l = 
+let rec sum l =
   match l with
   | [] -> 0
   | hd :: tl -> hd + sum tl
@@ -154,16 +154,16 @@ let rec sum l =
 ```
 
 ``` {.ocaml}
-sum [1;2;3];; 
+sum [1;2;3];;
 
 ```
 
 ``` {.ocaml}
 
-let rec destutter list = 
+let rec destutter list =
   match list with
   | [] -> []
-  | hd1 :: hd2 :: tl -> 
+  | hd1 :: hd2 :: tl ->
      if hd1 = hd2 then destutter (hd2 :: tl)
      else hd1 :: destutter (hd2 :: tl)
 ;;
@@ -171,7 +171,7 @@ let rec destutter list =
 ```
 
 ``` {.ocaml}
-let rec destutter list = 
+let rec destutter list =
   match list with
   | [] -> []
   | [hd] -> [hd]
@@ -191,7 +191,7 @@ Options
 -------
 
 ``` {.ocaml}
-let divide x y = 
+let divide x y =
   if y = 0 then None else Some (x/y);;
 
 ```
@@ -201,12 +201,12 @@ let divide x y =
 ``` {.ocaml}
 open Core.Std;;
 
-let log_entry maybe_time message = 
-  let time = 
+let log_entry maybe_time message =
+  let time =
     match maybe_time with
     | Some x -> x
     | None -> Time.now()
-  in 
+  in
   Time.to_sec_string time ^ "__" ^ message
 ;;
 
@@ -260,7 +260,7 @@ val magnitude : point2d -&gt; float = &lt;fun&gt;
 
 ``` {.ocaml}
 
-let distance v1 v2 = 
+let distance v1 v2 =
   magnitude { x = v1.x -. v2.x; y = v1.y -. v2.y };;
 
 ```
@@ -304,9 +304,156 @@ val is~insidesceneelement~ : point2d -&gt; sene~element~ -&gt; bool =
 &lt;fun&gt;
 
 ``` {.ocaml}
-let is_inside_scene point scene = 
+let is_inside_scene point scene =
   List.exists scene
     ~f:(fun el -> is_inside_scene_element point el)
+;;
+
+```
+
+``` {.ocaml}
+is_inside_scene {x=3.;y=7.}
+  [ Circle {center = {x=4.;y= 4.}; radius = 0.5} ];;
+
+```
+
+``` {.ocaml}
+is_inside_scene {x=3.;y=7.}
+  [ Circle {center = {x=4.;y= 4.}; radius = 5.0} ];;
+
+```
+
+Imperative Programming
+======================
+
+Arrays
+------
+
+``` {.ocaml}
+let numbers = [| 1; 2; 3; 4|];;
+
+```
+
+Arrays 和 Python 一样， 从 0 开始
+
+``` {.ocaml}
+numbers.(2) <- 4;;
+
+```
+
+``` {.ocaml}
+numbers;;
+
+```
+
+Mutable Record Fields
+---------------------
+
+``` {.ocaml}
+type running_sum =
+  {
+    mutable sum: float;
+    mutable sum_sq: float;
+    mutable samples: int;
+  }
+;;
+```
+
+``` {.ocaml}
+let mean rsum = rsum.sum /. Float.of_int rsum.samples
+let stdev rsum =
+  Float.sqrt (rsum.sum_sq /. Float.of_int rsum.samples
+              -. (rsum.sum /. Float.of_int rsum.samples) **. 2.) ;;
+
+```
+
+``` {.ocaml}
+
+let create () = { sum = 0.; sum_sq = 0.; samples = 0 }
+let update rsum x =
+  rsum.samples <- rsum.samples + 1;
+  rsum.sum     <- rsum.sum     +. x;
+  rsum.sum_sq  <- rsum.sum_sq  +. x *. x
+;;
+```
+
+``` {.ocaml}
+
+let rsum = create ();;
+
+```
+
+``` {.ocaml}
+
+List.iter [1.;3.;2.;-7.;4.;5.] ~f:(fun x -> update rsum x);;
+
+```
+
+``` {.ocaml}
+
+mean rsum;;
+
+```
+
+``` {.ocaml}
+
+stdev rsum;;
+
+```
+
+Refs
+====
+
+``` {.ocaml}
+
+let x = { contents = 0 };;
+
+```
+
+``` {.ocaml}
+
+x.contents <- x.contents + 1;;
+
+```
+
+``` {.ocaml}
+x;;
+
+```
+
+``` {.ocaml}
+
+let x = ref 0
+
+```
+
+``` {.ocaml}
+!x;;
+
+```
+
+``` {.ocaml}
+
+x := !x + 1;; (* assignment, i.e., x.contents <- ......*);;
+!x;;
+
+```
+
+``` {.ocaml}
+
+type 'a ref = { mutable contents : 'a }
+
+let ref x = { contents = x }
+let (!) r = r.contents
+let (:=) r x = r.contents <- x
+;;
+```
+
+``` {.ocaml}
+let sum list =
+  let sum = ref 0 in
+  List.iter list ~f:(fun x -> sum := !sum + x);
+  !sum
 ;;
 
 ```

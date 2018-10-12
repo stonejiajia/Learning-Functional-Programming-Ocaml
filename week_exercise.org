@@ -1,0 +1,165 @@
+#+TITLE: week_exercise
+
+#+BEGIN_SRC ocaml
+
+1 + 2 *3 -4
+
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+#+BEGIN_SRC ocaml
+
+10/3*3
+
+#+END_SRC
+
+#+RESULTS:
+: 9
+
+mod 优先
+
+#+BEGIN_SRC ocaml
+42 + 73 mod 5 * 2
+
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+#+BEGIN_SRC ocaml
+
+2 + 3 * 4 -5
+
+#+END_SRC
+
+#+RESULTS:
+: 9
+
+#+BEGIN_SRC ocaml
+
+20/3
+
+#+END_SRC
+
+#+RESULTS:
+: 6
+
+#+BEGIN_SRC ocaml
+
+11/ 4 * 4 + 11 mod 4
+
+#+END_SRC
+
+#+RESULTS:
+: 11
+
+#+BEGIN_SRC ocaml
+
+not (not false)
+
+#+END_SRC
+
+#+RESULTS:
+: false
+
+#+BEGIN_SRC ocaml
+false | false
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 6-7:
+:   false | false;;
+:         ^
+: Error: Syntax error
+
+#+BEGIN_SRC ocaml
+false and true
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 6-9:
+:   false and true;;
+:         ^^^
+: Error: Syntax error
+
+not 优先
+#+BEGIN_SRC ocaml
+not false || true
+
+#+END_SRC
+
+#+RESULTS:
+: true
+
+#+BEGIN_SRC ocaml
+
+2 <> 3
+
+#+END_SRC
+
+#+RESULTS:
+: true
+
+#+BEGIN_SRC ocaml
+1 = true
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 4-8:
+:   1 = true;;
+:       ^^^^
+: Error: This expression has type bool but an expression was expected of type
+:          int
+
+#+BEGIN_SRC ocaml
+
+1 < 2 < 3
+#+END_SRC
+
+#+RESULTS:
+: Characters 9-10:
+:   1 < 2 < 3;;
+:           ^
+: Error: This expression has type int but an expression was expected of type
+:          bool
+
+#+BEGIN_SRC ocaml
+
+true = 1 && not (3 = 4)
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 8-9:
+:   true = 1 && not (3 = 4);;
+:          ^
+: Error: This expression has type int but an expression was expected of type
+:          bool
+
+#+BEGIN_SRC ocaml
+
+false 
+
+#+END_SRC
+
+#+RESULTS:
+: false
+
+#+BEGIN_SRC ocaml
+
+false <> 0 && 3 <= 4
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 10-11:
+:   false <> 0 && 3 <= 4;;
+:            ^
+: Error: This expression has type int but an expression was expected of type
+:          bool
+
