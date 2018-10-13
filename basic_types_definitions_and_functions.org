@@ -1,0 +1,42 @@
+#+TITLE: basic_types_definitions_and_functions
+
+#+BEGIN_SRC ocaml
+
+Char.code 'A';;
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 1-10:
+:   Char.code 'A';;;;
+:   ^^^^^^^^^
+: Error: Unbound value Char.code
+
+
+#+BEGIN_SRC ocaml
+if 1<2 then 6+7 else 67/23;;
+
+#+END_SRC
+
+#+RESULTS:
+: 13
+
+#+BEGIN_SRC ocaml
+12 > 56.1;;
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 5-9:
+:   12 > 56.1;;;;
+:        ^^^^
+: Error: This expression has type float but an expression was expected of type
+:          int
+
+#+BEGIN_SRC ocaml
+(73>42) && (1e10>0.1) && ('B'>'A');;
+
+#+END_SRC
+
+#+RESULTS:
+: true

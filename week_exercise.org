@@ -163,3 +163,330 @@ false <> 0 && 3 <= 4
 : Error: This expression has type int but an expression was expected of type
 :          bool
 
+* Expression
+
+#+BEGIN_SRC ocaml
+
+if 1 = 2 then "abc" else "def"
+
+#+END_SRC
+
+#+RESULTS:
+: def
+
+#+BEGIN_SRC ocaml
+
+if 1 = 2 then 3 else 4.5
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 22-25:
+:   if 1 = 2 then 3 else 4.5;;
+:                        ^^^
+: Error: This expression has type float but an expression was expected of type
+:          int
+
+#+BEGIN_SRC ocaml
+if 1 then 2 else 3
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 3-4:
+:   if 1 then 2 else 3;;
+:      ^
+: Error: This expression has type int but an expression was expected of type
+:          bool
+
+
+#+BEGIN_SRC ocaml
+if 1=2 then 34 else "56"
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 20-24:
+:   if 1=2 then 34 else "56";;
+:                       ^^^^
+: Error: This expression has type string but an expression was expected of type
+:          int
+
+#+BEGIN_SRC ocaml
+if 1 < "2" then 3.4 else 5.6
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 7-10:
+:   if 1 < "2" then 3.4 else 5.6;;
+:          ^^^
+: Error: This expression has type string but an expression was expected of type
+:          int
+
+
+
+#+BEGIN_SRC ocaml
+if 1 < "2" then 3.4 else 5.6
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 7-10:
+:   if 1 < "2" then 3.4 else 5.6;;
+:          ^^^
+: Error: This expression has type string but an expression was expected of type
+:          int
+
+
+#+BEGIN_SRC ocaml
+
+if "Amazone" < "Amour" then 3.4 else 5.6
+
+#+END_SRC
+
+#+RESULTS:
+: 3.4
+
+#+BEGIN_SRC ocaml
+if 0 then 1 else 2
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 3-4:
+:   if 0 then 1 else 2;;
+:      ^
+: Error: This expression has type int but an expression was expected of type
+:          bool
+
+
+#+BEGIN_SRC ocaml
+
+1 + (if 2 = 3 then 4. else 5.)
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 20-22:
+:   1 + (if 2 = 3 then 4. else 5.);;
+:                      ^^
+: Error: This expression has type float but an expression was expected of type
+:          int
+
+
+#+BEGIN_SRC ocaml
+
+if (if 1 = 2 then 3 else 4) <> 5 then 6 else 7
+
+#+END_SRC
+
+#+RESULTS:
+: 6
+
+
+#+BEGIN_SRC ocaml 
+
+if 1 <> 2 then (if 3<>4 then 6 else 7) else 8
+
+#+END_SRC
+
+#+RESULTS:
+: 6
+
+#+BEGIN_SRC ocaml
+
+1 + (if 2 = 3 then 4 else 5)
+
+#+END_SRC
+
+#+RESULTS:
+: 6
+
+#+BEGIN_SRC ocaml
+if 1 <> 2 then if 3 = 4 then 'a' else 'b' else 'c'
+
+#+END_SRC
+
+#+RESULTS:
+: 'b'
+
+#+BEGIN_SRC ocaml
+if 1 = 2 then (if 3 = 4 then 'a' else 'b') else (if 'c' <> 'd' then 'e' else 'f')
+
+#+END_SRC
+
+#+RESULTS:
+: 'e'
+
+
+#+BEGIN_SRC ocaml
+
+if 1 = 2 then if 3 = 4 then 5 else 6 else if 'a' <> 'b' then 'c' else 'd'
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 62-65:
+:   if 1 = 2 then if 3 = 4 then 5 else 6 else if 'a' <> 'b' then 'c' else 'd';;
+:                                                                ^^^
+: Error: This expression has type char but an expression was expected of type
+:          int
+
+The first branch of the outer conditional contains an integer expression, 
+while its second branch contains a character expression.
+
+
+#+BEGIN_SRC ocaml
+
+String.get "Hello" 3
+ 
+
+#+END_SRC
+
+#+RESULTS:
+: 'l'
+
+
+#+BEGIN_SRC ocaml
+
+String.get "Hello" 3
+
+#+END_SRC
+
+#+RESULTS:
+: 'l'
+
+#+BEGIN_SRC ocaml
+String.get "Hello" 1 + 2
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 0-20:
+:   String.get "Hello" 1 + 2;;
+:   ^^^^^^^^^^^^^^^^^^^^
+: Error: This expression has type char but an expression was expected of type
+:          int
+
+#+BEGIN_SRC ocaml
+
+String.get "Hello" 1 + 2
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 1-21:
+:   String.get "Hello" 1 + 2;;
+:   ^^^^^^^^^^^^^^^^^^^^
+: Error: This expression has type char but an expression was expected of type
+:          int
+
+#+BEGIN_SRC ocaml
+
+open std;;
+Char.code 'a' + 2
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 0-9:
+:   Char.code 'a' + 2;;
+:   ^^^^^^^^^
+: Error: Unbound value Char.code
+
+#+BEGIN_SRC ocaml
+
+"An approximation of pi is: " ^ string_of_int (int_of_float 3.14) ^ ".14"
+
+#+END_SRC
+
+#+RESULTS:
+: Characters -1--1:
+:   
+:   
+: Error: Reference to undefined global `Core__Std0'
+
+#+BEGIN_SRC ocaml
+1 + int_of_string "23" + 45
+
+#+END_SRC
+
+#+RESULTS:
+: 69
+
+#+BEGIN_SRC ocaml
+
+int_of_string "12" ^ "34"
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 1-19:
+:   int_of_string "12" ^ "34";;
+:   ^^^^^^^^^^^^^^^^^^
+: Error: This expression has type int but an expression was expected of type
+:          string
+
+#+BEGIN_SRC ocaml
+not (if true then 2 = 3 else 'a' <> 'c')
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 18-19:
+:   not (if true then 2 = 3 else 'a' <> 'c');;
+:                     ^
+: Error: This expression has type int but an expression was expected of type
+:          Core.Std.Char.t = char
+
+#+BEGIN_SRC ocaml
+if not not false then float_of_int 2 else sqrt (sqrt 16.)
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 3-6:
+:   if not not false then float_of_int 2 else sqrt (sqrt 16.);;
+:      ^^^
+: Error: This function has type bool -> bool
+:        It is applied to too many arguments; maybe you forgot a `;'.
+
+#+BEGIN_SRC ocaml
+
+1 + (if "int" <> "float" then 2. else 3.) +. 4.
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 12-17:
+:   1 + (if "int" <> "float" then 2. else 3.) +. 4.;;
+:           ^^^^^
+: Error: This expression has type string but an expression was expected of type
+:          Core.Std.Char.t = char
+
+#+BEGIN_SRC ocaml
+if "string" <> "char" then String.get "A" 0 else "A"
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 3-11:
+:   if "string" <> "char" then String.get "A" 0 else "A";;
+:      ^^^^^^^^
+: Error: This expression has type string but an expression was expected of type
+:          Core.Std.Char.t = char
+
+
+#+BEGIN_SRC ocaml
+
+String.get "King's Cross Station" (if 0 <> 1 then 8.25 else 9.75)
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 39-40:
+:   String.get "King's Cross Station" (if 0 <> 1 then 8.25 else 9.75);;
+:                                         ^
+: Error: This expression has type int but an expression was expected of type
+:          Core.Std.Char.t = char
