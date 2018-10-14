@@ -1,0 +1,10 @@
+#+TITLE: week2
+
+#+BEGIN_SRC ocaml
+
+let x = 4 in x + 12;
+    
+#+END_SRC
+
+#+RESULTS:
+: 16
