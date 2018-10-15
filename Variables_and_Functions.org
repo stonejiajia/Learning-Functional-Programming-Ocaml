@@ -147,3 +147,277 @@ let upcase_first_enty line =
 
  #+RESULTS:
  : <fun>
+
+ 
+ 
+* COMMENT Functions
+
+Anonymous Functions
+
+#+BEGIN_SRC ocaml
+open Core
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC ocaml
+
+(fun x -> x + 1);;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+
+(fun x -> x + 1) 7;;
+
+#+END_SRC
+
+#+RESULTS:
+: 8
+
+#+BEGIN_SRC ocaml
+List.map ~f:(fun x -> x + 1) [1;2;3];;
+
+#+END_SRC
+
+#+RESULTS:
+| 2 | 3 | 4 |
+
+stuff them to a data structure
+
+#+BEGIN_SRC ocaml
+let increments = [(fun x -> x + 1); (fun x -> x + 2)];;
+
+#+END_SRC
+
+#+RESULTS:
+| <fun> | <fun> |
+
+#+BEGIN_SRC ocaml
+
+List.map ~f:(fun g -> g 5) increments;;
+#+END_SRC
+
+#+RESULTS:
+| 6 | 7 |
+
+(fun g -> g 5)
+
+这个函数里的 Arguments 也是一个函数 即高阶函数。
+
+#+BEGIN_SRC ocaml
+let pluson = (fun x -> x + 1)
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+pluson 3
+
+#+END_SRC
+
+#+RESULTS:
+: 4
+
+
+#+BEGIN_SRC ocaml
+
+let plusone x = x + 1;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+** let and fun
+
+#+BEGIN_SRC ocaml
+(fun x -> x + 1) 7;;
+#+END_SRC
+
+#+RESULTS:
+: 8
+
+#+BEGIN_SRC ocaml
+let x = 7 in x + 1
+#+END_SRC
+
+#+RESULTS:
+: 8
+
+
+* Multiargument functions
+
+#+BEGIN_SRC ocaml
+open Base;;
+let abs_diff x y = abs (x -y);;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+abs_diff 9 8;;
+#+End_src
+
+#+RESULTS:
+: 1
+
+#+BEGIN_SRC ocaml
+let abs_diff =
+  (fun x -> (fun y -> abs (x - y)));;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+This style of function is called a curried function. (Currying is named after
+Haskell Curry, a logician who had a significant impact on the design and theory 
+of programming languages.) 
+
+#+BEGIN_SRC ocaml
+let dist_form_3 = abs_diff 3
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+dist_form_3 8
+#+END_SRC
+
+#+RESULTS:
+: 5
+
+#+BEGIN_SRC ocaml
+dist_form_3 (-1)
+#+END_SRC
+
+#+RESULTS:
+: 4
+
+Partial application
+
+#+BEGIN_SRC ocaml
+let abs_diff = (fun x y -> abs (x - y))
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let abs_diff (x,y) = abs (x - y)
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+abs_diff (3,4)
+#+END_SRC
+
+#+RESULTS:
+: 1
+
+* Recursive Functions
+
+#+BEGIN_SRC ocaml
+
+let rec find_first_stutter list = 
+  match list with
+  | [] | [_] ->
+     None
+  | x :: y :: tl ->
+     if x = y then Some x else find_first_stutter (y::tl)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+the pattern  | [] | [_] is what's called an or-pattern , which is a disjunction
+of two patterns, meaning that it will be considered a match if either pattern
+matches.
+
+所以 【】 对应的是 Empty List  【_】 对应的是single element
+
+#+BEGIN_SRC ocaml
+let rec is_even x = 
+  if x = 0 then true else is_odd (x - 1)
+and is_odd x = 
+  if x = 0 then false else is_even (x -1)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+
+Int.max 3 4
+
+#+END_SRC
+
+#+RESULTS:
+: 4
+
++ 也是一个函数
+ 
+#+BEGIN_SRC ocaml
+(+) 3 4
+
+#+END_SRC
+
+#+RESULTS:
+: 7
+
+#+BEGIN_SRC ocaml
+List.map ~f:((+) 3) [4;5;6]
+#+END_SRC
+
+#+RESULTS:
+| 7 | 8 | 9 |
+
+这些都是 函数
+
+! $ % & * + - . / : < = > ? @ ^ | ~
+
+#+BEGIN_SRC ocaml
+
+let (+!) (x1,y1) (x2,y2) = (x1 + x2, y1 + y2)
+
+#+END_SRC
+
+#+RESULTS:
+: val ( +! ) :
+:   Base__Int.t * Base__Int.t ->
+:   Base__Int.t * Base__Int.t -> Base__Int.t * Base__Int.t = <fun>
+
+#+BEGIN_SRC ocaml
+
+let (***) x y = (x ** y) ** y
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 18-19:
+:   let (***) x y = (x ** y) ** y;;
+:                    ^
+: Error: This expression has type Base__Int.t -> Base__Int.t
+:        but an expression was expected of type Base__Int.t = int
+
+#+BEGIN_SRC ocaml
+let ( *** ) x y = (x ** y) ** y
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>

@@ -118,3 +118,119 @@ let upcase_first_enty line =
 ``` {.example}
 <fun>
 ```
+
+Multiargument functions
+=======================
+
+``` {.ocaml}
+open Base;;
+let abs_diff x y = abs (x -y);;
+
+```
+
+``` {.ocaml}
+abs_diff 9 8;;
+```
+
+``` {.ocaml}
+let abs_diff =
+  (fun x -> (fun y -> abs (x - y)));;
+
+```
+
+This style of function is called a curried function. (Currying is named
+after Haskell Curry, a logician who had a significant impact on the
+design and theory of programming languages.)
+
+``` {.ocaml}
+let dist_form_3 = abs_diff 3
+
+```
+
+``` {.ocaml}
+dist_form_3 8
+```
+
+``` {.ocaml}
+dist_form_3 (-1)
+```
+
+Partial application
+
+``` {.ocaml}
+let abs_diff = (fun x y -> abs (x - y))
+```
+
+``` {.ocaml}
+let abs_diff (x,y) = abs (x - y)
+```
+
+``` {.ocaml}
+abs_diff (3,4)
+```
+
+Recursive Functions
+===================
+
+``` {.ocaml}
+
+let rec find_first_stutter list = 
+  match list with
+  | [] | [_] ->
+     None
+  | x :: y :: tl ->
+     if x = y then Some x else find_first_stutter (y::tl)
+
+```
+
+the pattern | \[\] | \[\_\] is what's called an or-pattern , which is a
+disjunction of two patterns, meaning that it will be considered a match
+if either pattern matches.
+
+所以 【】 对应的是 Empty List 【\_】 对应的是single element
+
+``` {.ocaml}
+let rec is_even x = 
+  if x = 0 then true else is_odd (x - 1)
+and is_odd x = 
+  if x = 0 then false else is_even (x -1)
+
+```
+
+``` {.ocaml}
+
+Int.max 3 4
+
+```
+
+-   也是一个函数
+
+``` {.ocaml}
+(+) 3 4
+
+```
+
+``` {.ocaml}
+List.map ~f:((+) 3) [4;5;6]
+```
+
+这些都是 函数
+
+! \$ % & \* + - . / : &lt; = &gt; ? @ \^ | \~
+
+``` {.ocaml}
+
+let (+!) (x1,y1) (x2,y2) = (x1 + x2, y1 + y2)
+
+```
+
+``` {.ocaml}
+
+let (***) x y = (x ** y) ** y
+
+```
+
+``` {.ocaml}
+let ( *** ) x y = (x ** y) ** y
+
+```
