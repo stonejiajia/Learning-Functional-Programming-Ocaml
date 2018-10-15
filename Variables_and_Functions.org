@@ -414,6 +414,8 @@ let (***) x y = (x ** y) ** y
 : Error: This expression has type Base__Int.t -> Base__Int.t
 :        but an expression was expected of type Base__Int.t = int
 
+(***) 是 OCaml 中的注释语句
+
 #+BEGIN_SRC ocaml
 let ( *** ) x y = (x ** y) ** y
 
@@ -421,3 +423,89 @@ let ( *** ) x y = (x ** y) ** y
 
 #+RESULTS:
 : <fun>
+
+
+#+BEGIN_SRC ocaml
+let (|>) x f = f x;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let path = "/usr/bin:/usr/local/bin:/bin:/sbin"
+
+#+END_SRC
+
+#+RESULTS:
+: /usr/bin:/usr/local/bin:/bin:/sbin
+
+#+BEGIN_SRC ocaml
+
+String.split ~on:':' path
+|> List.dedup ~compare:String.compare
+|> List.iter ~f:print_endline
+
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+#+BEGIN_SRC ocaml
+let split_path = String.split ~on:':' path in 
+let deduped_path = List.dedup ~compare:String.compare split_path in 
+List.iter ~f:print_endline deduped_path
+
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+#+BEGIN_SRC ocaml
+List.iter ~f:print_endline ["Two"; "lines"]
+
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+
+#+BEGIN_SRC ocaml
+List.iter ~f:print_endline
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let (^>) x f = f x
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let (^>) x f = f x;;
+
+Core.Sys.getenv "PATH"
+^> String.split ~on:':' path
+^> List.dedup_and_sort ~compare:String.compare
+^> List.iter ~f:print_endline
+;;
+#+END_SRC
+
+#+RESULTS:
+: Characters 103-129:
+:   ^> List.iter ~f:print_endline
+:      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+: Error: This expression has type Base.string Base.List.t -> unit
+:        but an expression was expected of type
+:          (Base.String.t Base.List.t -> Base.String.t Base.List.t) -> 'a
+:        Type Base.string Base.List.t = Base.string list
+:        is not compatible with type
+:          Base.String.t Base.List.t -> Base.String.t Base.List.t
+
+注意：
+|> 是 left-associative
+^> 是 right-associative

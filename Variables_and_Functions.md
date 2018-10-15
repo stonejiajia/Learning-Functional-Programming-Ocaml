@@ -230,7 +230,65 @@ let (***) x y = (x ** y) ** y
 
 ```
 
+(**\***) 是 OCaml 中的注释语句
+
 ``` {.ocaml}
 let ( *** ) x y = (x ** y) ** y
 
 ```
+
+``` {.ocaml}
+let (|>) x f = f x;;
+
+```
+
+``` {.ocaml}
+let path = "/usr/bin:/usr/local/bin:/bin:/sbin"
+
+```
+
+``` {.ocaml}
+
+String.split ~on:':' path
+|> List.dedup ~compare:String.compare
+|> List.iter ~f:print_endline
+
+```
+
+``` {.ocaml}
+let split_path = String.split ~on:':' path in 
+let deduped_path = List.dedup ~compare:String.compare split_path in 
+List.iter ~f:print_endline deduped_path
+
+```
+
+``` {.ocaml}
+List.iter ~f:print_endline ["Two"; "lines"]
+
+```
+
+``` {.ocaml}
+List.iter ~f:print_endline
+```
+
+``` {.ocaml}
+let (^>) x f = f x
+```
+
+``` {.ocaml}
+let (^>) x f = f x;;
+
+Core.Sys.getenv "PATH"
+^> String.split ~on:':' path
+^> List.dedup_and_sort ~compare:String.compare
+^> List.iter ~f:print_endline
+;;
+```
+
+注意：
+
+  --------------------------
+  &gt; 是 left-associative
+  --------------------------
+
+\^&gt; 是 right-associative
