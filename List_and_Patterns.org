@@ -176,7 +176,6 @@ let plus_one_if x =
 : <fun>
 
 #+BEGIN_SRC ocaml
-#require "core_bench";;
 
 open Core_bench;;
 [ Bench.Test.create ~name:"plus_one_match" (fun () ->
@@ -189,7 +188,188 @@ open Core_bench;;
 #+END_SRC
 
 #+RESULTS:
-: Characters 2-19:
-:   [ Bench.Test.create ~name:"plus_one_match" (fun () ->
-:     ^^^^^^^^^^^^^^^^^
-: Error: Unbound module Bench
+: ()
+  #           Estimated testing time 20s (2 benchmarks x 10s). Change using -quota SECS.
+┌────────────────┬──────────┐
+│ Name           │ Time/Run │
+├────────────────┼──────────┤
+│ plus_one_match │  66.51ns │
+│ plus_one_if    │ 197.14ns │
+└────────────────┴──────────┘
+- : unit = ()
+# - : string = "org-babel-ocaml-eoe"
+
+
+#+BEGIN_SRC ocaml
+let rec sum_if l = 
+  if List.is_empty l then 0
+  else List.hd_exn l + sum_if (List.tl_exn l)
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let numbers = List.range 0 1000 in
+[ Bench.Test.create ~name:"sum_if" (fun () -> ignore (sum_if numbers))
+; Bench.Test.create ~name:"sum"    (fun () -> ignore (sum numbers)) ]
+|> Bench.bench
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+      Estimated testing time 20s (2 benchmarks x 10s). Change using -quota SECS.
+┌────────┬──────────┐
+│ Name   │ Time/Run │
+├────────┼──────────┤
+│ sum_if │ 102.21us │
+│ sum    │  50.65us │
+└────────┴──────────┘
+- : unit = ()
+# - : string = "org-babel-ocaml-eoe"
+# 
+
+从上面的统计来看，Pattern matching 比 if (alternatives) 更有效率
+
+* Detectiong Errors
+
+#+BEGIN_SRC ocaml
+let rec drop_zero l = 
+  match l with
+  | [] -> []
+  | 0 :: tl -> drop_zero tl
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+printf "%s\n"
+  (render_table
+     ["language";"architect";"first release"]
+     [ ["Lisp" ;"John McCarthy" ;"1958"] ;
+       ["C"    ;"Dennis Ritchie";"1969"] ;
+       ["ML"   ;"Robin Milner"  ;"1973"] ;
+       ["OCaml";"Xavier Leroy"  ;"1996"] ;
+     ]);;
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 0-6:
+:   printf "%s\n"
+:   ^^^^^^
+: Error: Unbound value printf
+
+#+BEGIN_SRC ocaml
+List.map ~f:String.length["Hello"; "World"]
+
+#+END_SRC
+
+#+RESULTS:
+| 5 | 5 |
+
+
+#+BEGIN_SRC ocaml
+List.map2 ~f:Int.max [1;2;3] [3;2;1]  
+
+#+END_SRC
+
+#+RESULTS:
+: Base.List.Or_unequal_lengths.Ok [3, 2, 3]
+
+#+BEGIN_SRC ocaml
+List.fold
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+List.fold three arguments
++ a list to process
++ an initial accumulator value
++ a function for updating the accumulator 
+  
+
+#+BEGIN_SRC ocaml
+List.fold ~init:10 ~f:(+) [1;2;3;4]
+#+END_SRC
+
+#+RESULTS:
+: 20
+
+#+BEGIN_SRC ocaml
+List.fold ~init:[] ~f:(fun list x -> x :: list) [1;2;3;4]
+
+#+END_SRC
+
+#+RESULTS:
+| 4 | 3 | 2 | 1 |
+
+#+BEGIN_SRC ocaml
+let max_widths header rows = 
+  let lengths l = List.map ~f:String.length l in 
+  List.fold rows 
+    ~init:(lengths header)
+    ~f:(fun acc row ->
+      List.map2_exn ~f:Int.max acc (lengths row))
+
+#+END_SRC
+
+#+RESULTS:
+: val max_widths :
+:   Base.String.t Base.List.t ->
+:   Base.String.t Base.List.t Base.List.t -> Base.Int.t Base.List.t = <fun>
+
+
+#+BEGIN_SRC ocaml
+let render_separator widths =
+  let pieces = List.map widths
+      ~f:(fun w -> String.make (w + 2) '-')
+  in
+  "|" ^ String.concat ~sep:"+" pieces ^ "|"
+;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+** Performance of String.concat and ^
+
+#+BEGIN_SRC ocaml
+let s = "." ^ "." ^ "." ^ "." ^ "." ^ "."
+
+#+END_SRC
+
+#+RESULTS:
+: "......"
+
+#+BEGIN_SRC ocaml
+let s = String.concat [".";".";".";".";".";".";"."]
+
+#+END_SRC
+
+#+RESULTS:
+: "......."
+
+#+BEGIN_SRC ocaml
+let pad s length = 
+  " " ^ s ^ String.make (length - String.length s + 1) ' '
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+pad "hello" 4
+
+#+END_SRC
+
+#+RESULTS:
+: " hello"
