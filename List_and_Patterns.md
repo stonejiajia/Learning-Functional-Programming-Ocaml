@@ -268,3 +268,157 @@ let pad s length =
 pad "hello" 4
 
 ```
+
+More Useful List Functions
+==========================
+
+``` {.ocaml}
+List.reduce
+
+```
+
+``` {.ocaml}
+List.reduce ~f:(+) [1;2;3;4;5]
+
+```
+
+``` {.ocaml}
+List.reduce ~f:(+) [] 
+```
+
+Filtering with List.filter and List.filter~map~
+-----------------------------------------------
+
+``` {.ocaml}
+List.filter ~f:(fun x -> x mod 2 = 1) [1;2;3;4;5]
+```
+
+``` {.ocaml}
+List.filter_map (Sys.ls_dir ".") ~f:(fun fname ->
+    match String.rsplit2 ~on:'.' fname with 
+    | None | Some ("",_) -> None
+    | Some (_,ext) ->
+      Some ext)
+              |> List.dedup
+
+```
+
+``` {.ocaml}
+let extensions filenames =
+  List.filter_map filenames ~f:(fun fname ->
+      match String.rsplit2 ~on:'.' fname with
+      | None  | Some ("",_) -> None
+      | Some (_,ext) ->
+        Some ext)
+  |> List.dedup_and_sort ~compare:String.compare
+
+```
+
+None | Some ("",\_) is an Or pattern
+
+Partitioning with List.partition~tf~
+------------------------------------
+
+把 List 中的元素用布尔值来判断是否 tf 告诉读者 true 元素是第一个， False
+是第二个
+
+``` {.ocaml}
+let is_ocaml_source s = 
+  match String.rsplit2 s ~on:'.' with
+  | Some (_,("ml"|"mli")) -> true
+  | _ -> false
+```
+
+``` {.ocaml}
+
+let (ml_files,other_files) =
+  List.partition_tf ["foo.c"; "foo.ml"; "bar.ml"; "bar.mli"]  ~f:is_ocaml_source;;
+```
+
+Tail Recursion
+==============
+
+``` {.ocaml}
+let rec length = function
+  | [] -> 0
+  | _ :: tl -> 1 + length tl
+
+```
+
+``` {.ocaml}
+length [1;2;3;3;9]
+```
+
+``` {.ocaml}
+let make_list n = List.init n ~f:(fun x -> x)
+```
+
+``` {.ocaml}
+make_list 10
+```
+
+``` {.ocaml}
+length (make_list 10000)
+
+```
+
+``` {.ocaml}
+let rec length_plus_n l n = 
+  match l with
+  | [] -> n
+  | _ :: tl -> length_plus_n tl (n + 1)
+
+```
+
+``` {.ocaml}
+let length l = length_plus_n l 0
+
+```
+
+``` {.ocaml}
+length [1;2;3;4;4;5;9]
+
+```
+
+``` {.ocaml}
+length (make_list 100)
+```
+
+Terser and Faster Patterns
+==========================
+
+``` {.ocaml}
+
+let rec destutter list =
+  match list with
+  | [] -> []
+  | [hd] -> [hd]
+  | hd :: hd' :: tl ->
+    if hd = hd' then destutter (hd' :: tl)
+    else hd :: destutter (hd' :: tl)
+;;
+
+```
+
+val destutter : Base\_~Int~.t Base\_~List~.t -&gt; Base\_~Int~.t
+Base\_~List~.t = &lt;fun&gt;
+
+``` {.ocaml}
+let rec destutter = function
+  | [] as l -> l
+  | [_] as l -> l
+  | hd :: (hd' :: _ as tl) ->
+    if hd = hd' then destutter tl
+    else hd :: destutter tl
+
+```
+
+``` {.ocaml}
+let rec destutter = function
+  | [] | [_] as l -> l
+  | hd :: (hd' :: _ as tl) ->
+    if hd = hd' then destutter tl
+    else hd :: destutter tl
+;;
+
+```
