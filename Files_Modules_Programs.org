@@ -1,0 +1,92 @@
+#+TITLE: Files_Modules_Programs
+
+* Single-File Programs
+
+
+#+BEGIN_SRC ocaml
+let assoc = [("one", 1); ("two",2); ("three",3)]
+
+#+END_SRC
+
+#+RESULTS:
+:   [("one", 1), ("two", 2), ("three", 3)]
+
+#+BEGIN_SRC ocaml
+List.Assoc.find assoc "two"
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+List.Assoc.add assoc "four" 4
+
+#+END_SRC
+
+#+RESULTS:
+: - : equal:(Format.tag -> Format.tag -> bool) ->
+:     (Format.tag, Base__Int.t) List.Assoc.t
+: = <fun>
+
+#+BEGIN_SRC ocaml
+assoc
+
+#+END_SRC
+
+#+RESULTS:
+| one   | 1 |
+| two   | 2 |
+| three | 3 |
+
+虽然 Add 了新的元素，但是原来的 accoc 中的元素没变。
+
+#+BEGIN_SRC ocaml
+open Core.Std
+       
+let build_counts () = 
+  In_channel.fold_lines stdin ~init:[] ~f:(fun counts line ->
+    let count = 
+    match List.Assoc.find counts line with
+    | None -> 0
+    | Some x -> x
+    in 
+    List.Assoc.add counts ine (count + 1))
+    
+let () = 
+  build_counts ()
+|> List.sort ~cmp:(fun (_,x) (_,y) -> Int.descending x y)
+|> (fun l -> List.take l 10)
+|> List.iter ~f:(fun (line, count) -> printf "%3d: %s\n" count line)
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 5-13:
+:   open Core.Std;;
+:        ^^^^^^^^
+: Warning 3: deprecated: module Core.Std
+: [since 2017-02] Use Core. The Std sub-module is no longer needed
+
+
+
+OCaml ships with twi compilers.
+1. the ocamlc bytecode compiler
+   ocamlc are interpreted by  a virtual machine
+   
+2. ocamlopt native-code compiler
+   are compiled bto a native machine code to be run on a specific operating
+   system and processor architecture
+   
+The byte code compiler is quicker than the native-code compiler
+
+
+
+
+* Multifile Programs and Modules
+
+#+BEGIN_SRC ocaml
+
+
+#+END_SRC
