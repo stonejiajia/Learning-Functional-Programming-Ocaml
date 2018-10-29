@@ -28,7 +28,7 @@ let empty = [];;
 #+END_SRC
 
 #+RESULTS:
-| 3 |
+: []
 
 #+BEGIN_SRC ocaml
 "three" :: empty;;
@@ -269,7 +269,7 @@ List.map ~f:String.length["Hello"; "World"]
 #+END_SRC
 
 #+RESULTS:
-| 5 | 5 |
+: <abstr>
 
 
 #+BEGIN_SRC ocaml
@@ -278,7 +278,7 @@ List.map2 ~f:Int.max [1;2;3] [3;2;1]
 #+END_SRC
 
 #+RESULTS:
-: Base.List.Or_unequal_lengths.Ok [3, 2, 3]
+: <abstr>
 
 #+BEGIN_SRC ocaml
 List.fold

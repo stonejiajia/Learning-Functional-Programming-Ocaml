@@ -1,0 +1,107 @@
+#+TITLE: Case_by_Case
+
+* Simple patter matching
+
+#+BEGIN_SRC ocaml
+let rec factorial a = 
+  if a = 1 then 1 else a * factorial (a - 1)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let rec factorial a = 
+  match a with
+    1 -> 1
+  | _ -> a * factorial (a - 1)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+See if a matches the pattern 1, If it does, just return 1, 
+If not, see if it matches the pattern_ , If is does, then return
+is a * factorial (a - 1).
+
+*The pattern _ is special , it matches anything*
+
+
+#+BEGIN_SRC ocaml
+let isvowel c = 
+  c = 'a' || c = 'e' || c = 'i';;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+Here is how to write it using matching
+
+#+BEGIN_SRC ocaml
+
+let isvowel c = 
+  match c with 
+    'a' -> true
+  | 'e' -> true
+  | 'i' -> true
+  | 'o' -> true
+  | 'u' -> true
+  | _   -> false
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+let iscowel c = 
+  match c with
+    'a' | 'e' | 'i' | 'o'| 'u' -> true
+    | _ -> false
+             
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let rec gcd a b = 
+  if b = 0 then a else gcd b (a mod b)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+let rec gcd a b = 
+  match b with
+    0 -> a
+  | _ -> gcd b (a mod b)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+We use pattern mathcing whenever it is easier to read and understand
+than if then else expressions
+
+
+#+BEGIN_SRC ocaml
+let not x = 
+  match x with
+    x -> false
+  | _ -> true;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
