@@ -153,15 +153,25 @@ sort [53; 9; 2; 6; 19]
 
 
 sort [53; 9; 2; 6; 19]
+
 insert 53 (sort [9; 2; 6; 19])
+
 insert 53 (insert 9 (sort [2; 6; 19])))
+
 insert 53 (insert 9 (insert 2 sort [6; 19]))
+
 insert 53 (insert 9 (insert 2 (insert 6 (sort [19]))))
+
 insert 53 (insert 9 (insert 2 (insert 6 (insert 19 []))))
+
 insert 53 (insert 9 (insert 2 (insert 6 [19]))
+
 insert 53 (insert 9 (insert 2 [6; 19]))
+
 insert 53 (insert 9  [2; 6; 19])
+
 insert 53 [2; 6; 9; 19]
+
 [2; 6; 9; 19; 53]
 
 
