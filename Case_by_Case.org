@@ -105,3 +105,118 @@ let not x =
 #+RESULTS:
 : <fun>
 
+* Sorting Things
+
+#+BEGIN_SRC ocaml
+
+let rec insert x l =
+  match l with
+    [] -> [x]
+  | h::t -> 
+     if x <= h
+       then x :: h :: t
+       else h :: insert x t
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+insert 39 [1; 1; 2; 3; 5; 9];;
+
+#+END_SRC
+
+#+RESULTS:
+| 1 | 1 | 2 | 3 | 5 | 9 | 39 |
+
+
+#+BEGIN_SRC ocaml
+let rec sort l = 
+  match l with
+    [] -> []
+  | h::t -> insert h (sort t)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+sort [53; 9; 2; 6; 19]
+
+#+END_SRC
+
+#+RESULTS:
+| 2 | 6 | 9 | 19 | 53 |
+
+
+sort [53; 9; 2; 6; 19]
+insert 53 (sort [9; 2; 6; 19])
+insert 53 (insert 9 (sort [2; 6; 19])))
+insert 53 (insert 9 (insert 2 sort [6; 19]))
+insert 53 (insert 9 (insert 2 (insert 6 (sort [19]))))
+insert 53 (insert 9 (insert 2 (insert 6 (insert 19 []))))
+insert 53 (insert 9 (insert 2 (insert 6 [19]))
+insert 53 (insert 9 (insert 2 [6; 19]))
+insert 53 (insert 9  [2; 6; 19])
+insert 53 [2; 6; 9; 19]
+[2; 6; 9; 19; 53]
+
+
+#+BEGIN_SRC ocaml
+sort ['p'; 'i'; 'm'; 'c'; 's'; 'h'];;
+
+#+END_SRC
+
+#+RESULTS:
+| c | h | i | m | p | s |
+
+sort function takes time proportional to n^2
+
+#+BEGIN_SRC ocaml
+
+let rec merge x y =
+  match x, y with
+    [], l -> l
+  | l, [] -> l
+  | hx::tx, hy::ty ->
+     if hx < hy
+       then hx :: merge tx (hy :: ty)
+       else hy :: merge (hx :: tx) ty
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let rec length l = 
+  match l with
+    [] -> 0
+  | _::t -> 1 + length t
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let rec msort l = 
+  match l with 
+    [] -> []
+  | [x] -> [x]
+  | _ -> 
+     let left = take (length 1 / 2) l in 
+     let right = drop  (length 1 / 2) l in 
+     merge (msort left) (msort right)
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 102-103:
+:        let left = take (length 1 / 2) l in 
+:                                ^
+: Error: This expression has type int but an expression was expected of type
+:          'a list
