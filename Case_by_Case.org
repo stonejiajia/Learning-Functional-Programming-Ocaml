@@ -230,3 +230,236 @@ let rec msort l =
 :                                ^
 : Error: This expression has type int but an expression was expected of type
 :          'a list
+
+* COMMENT “Loading a Program from a File”
+
+
+#+BEGIN_SRC ocaml
+let rec length l = 
+  match l with
+    [] -> 0
+  | h::t -> 1 + length t;;
+
+let rec append a b = 
+  match a with
+    [] -> b
+  | h::t -> h :: append t b;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+* Functions upon Functions upon Functions
+
+
+#+BEGIN_SRC ocaml
+let rec double l = 
+  match l with
+    [] -> [] 
+  | h::t -> (h * 2) :: double t;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_EXAMPLE
+double [1; 2; 4]
+
+2 :: double [2; 4]
+
+2 :: 4 :: double [4]
+
+2 :: 4 :: 8 :: double []
+
+2 :: 4 :: 8 :: []
+
+[2; 4; 8]
+#+END_EXAMPLE
+
+
+#+BEGIN_SRC ocaml
+
+let rec evens l = 
+  match l with
+    [] -> []
+  | h::t -> (h mod 2 = 0) :: evens t
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+evens [1; 2; 4]
+
+#+END_SRC
+
+#+RESULTS:
+| false | true | true |
+
+
+#+BEGIN_SRC ocaml
+let rec map f l = 
+  match l with
+    [] -> [] 
+  | h::t -> f h :: map f t
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+val map : ('a -> 'b) -> 'a list -> 'b list = <fun>
+
+
+#+BEGIN_SRC ocaml
+let halve x = x / 2
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+
+
+map halve [10; 20; 30]
+#+END_SRC
+
+#+RESULTS:
+| 5 | 10 | 15 |
+
+#+BEGIN_EXAMPLE
+map halve [10; 20; 30]
+
+5 :: map halve [20; 30]
+
+5 :: 10 :: map halve [30]
+
+5 :: 10 :: 15 :: map halve []
+
+5 :: 10 :: 15 :: []
+
+[5; 10; 15]
+#+END_EXAMPLE
+
+
+#+BEGIN_SRC ocaml
+let is_even x = 
+  x mod 2 = 0
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let evens l = 
+  map (fun x -> x mod 2 = 0) l
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+
+#+BEGIN_SRC ocaml
+map (fun x -> x / 2) [10; 20; 30]
+
+#+END_SRC
+
+#+RESULTS:
+| 5 | 10 | 15 |
+
+val merge : ('a -> 'a -> bool) -> 'a list -> 'a list -> 'a list = <fun>
+
+val msort : ('a -> 'a -> bool) -> 'a list -> 'a list = <fun>
+
+type a -> a -> bool . That is ,it takes two elements of the same type , and 
+return true, if the first is "greater" than the second
+
+
+#+BEGIN_SRC ocaml
+let rec merge cmp x y = 
+  match x, y with 
+    [], l -> l
+  | l, [] -> l
+  | hx::tx, hy::ty ->
+     if cmp hx hy
+        then hx :: merge cmp tx (hy :: ty)
+        else hy :: merge cmp (hx :: tx) ty
+                     
+                     
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+let rec msort cmp l = 
+  match l with 
+    [] -> []
+  | [x] -> [x]
+  | _ -> 
+     let left = take (length l / 2) l in
+       let right = drop (length l / 2) l in 
+         merge cmp (msort cmp left) (msort cmp right)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+
+let greater a b = 
+  a >= b
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+msort greater [5; 4; 6; 2; 1]
+
+#+END_SRC
+
+#+RESULTS:
+| 6 | 5 | 4 | 2 | 1 |
+
+
+#+BEGIN_SRC ocaml
+( <= )
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+msort ( <= ) [5; 4; 6; 2; 1]
+
+#+END_SRC
+
+#+RESULTS:
+| 1 | 2 | 4 | 5 | 6 |
+
+#+BEGIN_SRC ocaml
+msort ( >= ) [5; 4; 6; 2; 1]
+
+#+END_SRC
+
+#+RESULTS:
+| 6 | 5 | 4 | 2 | 1 |
+
+
+* When Things Go Wrong
+
