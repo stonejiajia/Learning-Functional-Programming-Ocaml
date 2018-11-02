@@ -463,3 +463,170 @@ msort ( >= ) [5; 4; 6; 2; 1]
 
 * When Things Go Wrong
 
+* Looking Things Up
+
+| House | People |
+|-------+--------|
+|     1 |      4 |
+|     2 |      2 |
+|     3 |      2 |
+|     4 |      3 |
+|     5 |      1 |
+|     6 |      2 |
+|       |        |
+
+
+To make a pair in OCaml
+
+#+BEGIN_SRC ocaml
+let p = (1, 4)
+
+#+END_SRC
+
+#+RESULTS:
+: (1, 4)
+
+val p : int * int = (1, 4)
+
+
+#+BEGIN_SRC ocaml
+let q = (1, '1')
+
+#+END_SRC
+
+#+RESULTS:
+: (1, '1')
+
+val q : int * char = (1, '1')
+
+
+#+BEGIN_SRC ocaml
+let fst p = match p with (x, _) -> x;;
+let snd p = match p with (_, y) -> y;;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+fst (1, 'a')
+
+#+END_SRC
+
+#+RESULTS:
+: 1
+
+
+#+BEGIN_SRC ocaml 
+snd (7, 'a')
+
+#+END_SRC
+
+#+RESULTS:
+: 'a'
+
+
+#+BEGIN_SRC ocaml
+let census = [(1, 4); (2, 2); (3, 2); (4, 3); (5, 1); (6, 2)]
+
+#+END_SRC
+
+#+RESULTS:
+:   [(1, 4), (2, 2), (3, 2), (4, 3), (5, 1), (6, 2)]
+
+val census : (int * int) list =
+
+#+BEGIN_SRC ocaml
+let y = (1, [2; 3; 4])
+
+#+END_SRC
+
+#+RESULTS:
+| 1 | (2 3 4) |
+
+lookup :a -> (axb) list -> b
+
+#+BEGIN_SRC ocaml
+let rec lookup x l = 
+  match l with
+    [] -> raise Not_found
+  | (k, v)::t ->
+     if k = x then v else lookup x t
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let rec add k v d = 
+  match d with
+    [] -> [(k, v)]
+  | (k', v')::t ->
+     if k = k'
+        then (k, v) :: t
+        else (k', v') :: add k v t    
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+#+BEGIN_SRC ocaml
+add 8 2 [(4, 5); (6, 3)]
+
+#+END_SRC
+
+
+
+| 4 | 5 |
+| 6 | 3 |
+| 8 | 2 |
+
+
+* More with Functions
+
+#+BEGIN_SRC ocaml
+let add x y = x + y
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let f = add 6
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml 
+
+f 5
+
+#+END_SRC
+
+#+RESULTS:
+: 11
+
+
+#+BEGIN_SRC ocaml
+
+map (add 6) [10; 20; 30]
+
+#+END_SRC
+
+
+| 16 | 26 | 36 |
+
+
+#+BEGIN_SRC ocaml
+
+map (fun x -> x * 2) [10; 20; 30]
+
+#+END_SRC
+
+#+RESULTS:
+| 20 | 40 | 60 |

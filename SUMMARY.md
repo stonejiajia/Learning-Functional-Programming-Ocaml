@@ -5,3 +5,4 @@
 * [Array,For While Loops](Array_For_Loops.md)
 * [Variables and Functionas](Variables_and_Functions.md)
 * [List and Patterns](List_and_Patterns.md)
+* [OCaml for very beginner](Case_by_Case.md)
