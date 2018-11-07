@@ -453,3 +453,245 @@ map (add 6) [10; 20; 30]
 map (fun x -> x * 2) [10; 20; 30]
 
 ```
+
+New Kinds of Data
+=================
+
+The name of type is colour. It has four constructors, Red, Green, and
+Yellow
+
+``` {.ocaml}
+
+type colour = Red | Green | Blue | Yellow
+
+```
+
+``` {.ocaml}
+let col = Blue
+
+let cols = [Red; Red; Green; Yellow]
+
+let colpair = ('R', Red)
+
+```
+
+``` {.ocaml}
+type colour = 
+  Red
+| Green
+| Blue
+| Yellow
+| RGB of int * int * int
+
+```
+
+``` {.ocaml}
+let cols = [Red; Red; Green; Yellow; RGB (150, 0, 255);]
+
+```
+
+我们可用 Pattern matching 的 functions 来代替新的 Type
+
+We can write functions by pattern matching over our new type
+
+``` {.ocaml}
+let components c = 
+  match c with 
+    Red -> (255, 0, 0)
+  | Green -> (0, 255, 0)
+  | Blue -> (0, 0, 255)
+  | Yellow -> (255, 255, 0)
+  | RGB (r, g, b) -> (r, g, b)
+
+```
+
+Type could be polymorphic.
+
+``` {.ocaml}
+type 'a option = None | Some of 'a
+
+```
+
+We can read as "a value of type a optio is either nothing, or something
+of type a"
+
+``` {.ocaml}
+let nothing = None
+
+let number = Some 50
+
+let numbers = [Some 12; None; None; Some 2]
+
+let word = Some ['c'; 'a'; 'k'; 'e']
+
+```
+
+Here is a function to look up a value in a dictionary, return None,
+instead of raising an exception if the value is not found
+
+``` {.ocaml}
+
+let rec lookup_opt x l = 
+  match l with
+    [] -> None
+  | (k, v)::t -> if x = k then Some v else lookup_opt x t
+```
+
+``` {.ocaml}
+type 'a sequence = Nil | Cons of 'a * 'a sequence
+
+```
+
+  Built-in                    Ours                                        Our Type
+  --------------------------- ------------------------------------------- ----------------
+  \[\]                        Nil                                         a sequence
+  \[1\]                       Cons (1, Nil)                               int sequence
+  \['a'; 'x'; 'e'\]           Cons ('a', Cons ('x', Cons ('e', Nil)))     char sequence
+  \[Red; RGB (20, 20, 20)\]   COns (Red, Cons (RGB (20, 20 , 20), Nil))   color sequence
+
+``` {.ocaml}
+let rec length l = 
+  match l with
+    [] -> 0
+  | _::t -> 1 + length t
+
+let rec append a b =
+  match a with 
+    [] -> b
+  | h::t -> h :: append t b
+
+```
+
+Web can creat same functions with new sequence type:
+
+``` {.ocaml}
+let rec length s = 
+  match s with
+    Nil -> 0
+  | Cons (_, t) -> 1 + length t
+
+let rec append a b = 
+  match a with
+    Nil -> b
+  | Cons (h, t) -> Cons (h, append t b)
+
+```
+
+A Type for Mathematical Expressions
+-----------------------------------
+
+``` {.ocaml}
+type expr = 
+  Num of int 
+| Add of expr * expr
+| Subtract of expr * expr
+| Multiply of expr * expr
+| Divide of expr * expr
+
+```
+
+``` {.ocaml}
+Add (Num 1, Multiply (Num 2, Num 3))
+
+```
+
+Wen can write a same function
+
+``` {.ocaml}
+let rec evaluate e = 
+  match e with
+    Num x -> x
+  | Add (e, e') -> evaluate e + evaluate e'
+  | Subtract (e, e') -> evaluate e - evaluate e'
+  | Multiply (e, e') -> evaluate e * evaluate e'
+  | Divide (e, e') -> evaluate e / evaluate e'
+
+```
+
+Growing Trees
+=============
+
+``` {.ocaml}
+type 'a tree = 
+  Br of 'a * 'a tree * 'a tree
+| Lf
+
+```
+
+Two constructors
+
+1.  Br
+2.  Lf (leaf)
+
+The empty tree is simply
+
+``` {.ocaml}
+let rec size tr = 
+  match tr with
+    Br (_, l, r) -> 1 + size l + size r
+  | Lf -> 0
+
+```
+
+A similar function can be used to add up all the integers in an int
+tree.
+
+``` {.ocaml}
+let rec total tr = 
+  match tr with
+    Br (x, l, r) -> x + total l + total r
+  | Lf -> 0
+
+```
+
+Calculate the maximum depth fo tree.
+
+``` {.ocaml}
+let max x y = 
+  if x > y then x else y;;
+
+let rec maxdepth tr = 
+  match tr with
+    Br (_, l, r) -> 1 + max (maxdepth l) (maxdepth r)
+  | Lf -> 0
+
+```
+
+Exract all of the elements from a tree into a list
+
+``` {.ocaml}
+let rec list_of_tree tr = 
+  match tr with
+    Br (x, l, r) -> list_of_tree l @ [x] @ list_of_tree r
+  | Lf -> []
+
+```
+
+Usring trees to build better dictionaries
+-----------------------------------------
+
+The most important advantage of a tree is that if is often very much
+easier to reach a given element.
+
+``` {.ocaml}
+let rec lookup tr k = 
+  match tr with
+    Lf -> raise Not_found
+  | Br ((k', v), l, r) -> 
+     if k = k' then v
+     else if k < k' then lookup l k
+     else lookup r k
+
+```
+
+``` {.ocaml}
+let rec insert tr k v = 
+  match tr with
+    Lf -> Br ((k, v), Lf, Lf)
+  | Br ((k', v'), l, r) ->
+     if k = k' then Br ((k', v'), l, r)
+     else if k < k' then Br ((k', v'), insert l k v, r)
+     else Br ((k', v'), l, insert r k v)
+
+
+```
