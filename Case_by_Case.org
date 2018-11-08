@@ -945,3 +945,296 @@ let rec insert tr k v =
 #+RESULTS:
 : <fun>
 
+
+* In and Out
+
+#+BEGIN_SRC ocaml :results value
+print_int 100;;
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+
+#+BEGIN_SRC ocaml
+let print_dict_entry (k, v) = 
+  print_int k; 
+  print_newline (); 
+  print_string v ; 
+  print_newline ()
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+  val print_dict_entry : int * string -> unit = <fun>
+
+#+BEGIN_SRC ocaml
+print_dict_entry (1, "one");;
+
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+1
+one
+- : unit = ()
+  
+
+We could write our own function to literate over all the entries
+
+#+BEGIN_SRC ocaml
+let rec print_dict d = 
+  match d with
+    [] -> ()
+  | h::t -> print_dict_entry h; print_dict t
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let rec iter f l = 
+  match l with
+    [] -> ()
+  | h::t -> f h; iter f t
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+      val iter : ('a -> 'b) -> 'a list -> unit = <fun>
+
+
+#+BEGIN_SRC ocaml
+let print_dict d 
+      iter print_dict_entry d;;
+      
+      
+let print_dict = 
+  iter print_dict_entry
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+print_dict [(1, "one"); (2, "two"); (3, "three")];;
+
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+*** Read from the keyboard
+
+#+BEGIN_SRC ocaml
+let rec read_dict () = 
+  let i = read_int () in
+    if  i = 0 then [] else
+      let name = read_line () in 
+        (i, name) :: read_dict ();;
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+
+* Putting Things in Boxes
+
+Pure function which have no side-effects.
+OCaml provides a construct known as a reference which is a box
+in which we can store a value. we build a reference using the 
+built-in function ref of type a->a ref.
+
+#+BEGIN_SRC ocaml
+let x = ref 0;;
+
+#+END_SRC
+
+#+RESULTS:
+: {contents = 0}
+
+OCaml tell us that x is a *reference* of type *int ref* which current has
+contents , We can extract the current contents of a reference using the
+!operator, which has type a ref -> a
+
+#+BEGIN_SRC ocaml
+let p = !x;;
+#+END_SRC
+
+#+RESULTS:
+: 0
+
+#+BEGIN_SRC ocaml
+x := 50
+
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+#+BEGIN_SRC ocaml
+let q = !x;;
+
+#+END_SRC
+
+#+RESULTS:
+: 50
+
+#+BEGIN_SRC ocaml
+p;;
+
+#+END_SRC
+
+#+RESULTS:
+: 0
+
+:=  operator has a type ref -> a -> unit, Which means update value
+
+Notice that p is unchanged.
+
+
+#+BEGIN_SRC ocaml
+let swap a b = 
+  let t = !a in 
+    a := !b; b := t
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+*** Doing it again and again
+
+#+BEGIN_SRC ocaml
+for x = 1 to 5 do print_int x; print_newline () done 
+
+#+END_SRC
+
+#+RESULTS:
+: ()
+
+1
+2
+3
+4
+5
+- : unit = ()
+  
+#+BEGIN_SRC ocaml
+let channe_statistics in_channel = 
+  let lines = ref 0 in
+    try
+      while true do
+        let line = input_line in_channel in 
+          lines := !lines + 1
+      done
+    with
+      End_of_file ->
+        print_string "There were";
+        print_int !lines;
+        print_string " lines.";
+        print_newline ();;
+          
+let file_statistics name =
+  let channel = open_in name in 
+    try 
+      file_statistics_channel channel;
+      close_in channel
+    with
+      _ -> close_in channel
+        
+#+END_SRC
+
+#+RESULTS:
+: Characters 86-109:
+:         file_statistics_channel channel;
+:         ^^^^^^^^^^^^^^^^^^^^^^^
+: Error: Unbound value file_statistics_channel
+
+#+BEGIN_SRC ocaml
+(* Final version of word counter *)
+let print_histogram arr =
+  print_string "Character frequencies:";
+  print_newline ();
+  for x = 0 to 255 do
+    if arr.(x) > 0 then
+      begin
+        print_string "For character '";
+        print_char (char_of_int x);
+        print_string "' (character number ";
+        print_int x;
+        print_string ") the count is ";
+        print_int arr.(x);
+        print_string ".";
+        print_newline ()
+      end
+  done
+
+let channel_statistics in_channel =
+  let lines = ref 0
+  and characters = ref 0
+  and words = ref 0
+  and sentences = ref 0
+  and histogram = Array.make 256 0 in
+    try
+      while true do
+        let line = input_line in_channel in
+          lines := !lines + 1;
+          characters := !characters + String.length line;
+          String.iter
+            (fun c ->
+               match c with
+               '.' | '?' | '!' -> sentences := !sentences + 1
+               | ' ' -> words := !words + 1
+               | _ -> ())
+            line;
+          String.iter
+            (fun c ->
+              let i = int_of_char c in
+                histogram.(i) <- histogram.(i) + 1)
+            line
+      done
+    with
+      End_of_file ->
+        print_string "There were ";
+        print_int !lines;
+        print_string " lines, making up ";
+        print_int !characters;
+        print_string " characters with ";
+        print_int !words;
+        print_string " words in ";
+        print_int !sentences;
+        print_string " sentences.";
+        print_newline ();
+        print_histogram histogram
+
+let file_statistics name =
+  let channel = open_in name in
+    try
+      channel_statistics channel;
+      close_in channel
+    with
+      _ -> close_in channel
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+file_statistics "gregor.txt"
+
+#+END_SRC
+
+#+RESULTS:
+: Exception: Sys_error "gregor.txt: No such file or directory".
+: Raised by primitive operation at file "pervasives.ml", line 385, characters 28-54
+: Called from file "//toplevel//", line 393, characters 16-28
+: Called from file "toplevel/toploop.ml", line 180, characters 17-56

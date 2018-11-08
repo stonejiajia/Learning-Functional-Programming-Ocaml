@@ -695,3 +695,233 @@ let rec insert tr k v =
 
 
 ```
+
+In and Out
+==========
+
+``` {.ocaml .rundoc-block rundoc-language="ocaml" rundoc-results="value"}
+print_int 100;;
+```
+
+``` {.ocaml}
+let print_dict_entry (k, v) = 
+  print_int k; 
+  print_newline (); 
+  print_string v ; 
+  print_newline ()
+
+```
+
+val print~dictentry~ : int \* string -&gt; unit = &lt;fun&gt;
+
+``` {.ocaml}
+print_dict_entry (1, "one");;
+
+```
+
+1 one
+
+-   ``` {.example}
+    unit = ()
+    ```
+
+We could write our own function to literate over all the entries
+
+``` {.ocaml}
+let rec print_dict d = 
+  match d with
+    [] -> ()
+  | h::t -> print_dict_entry h; print_dict t
+
+```
+
+``` {.ocaml}
+let rec iter f l = 
+  match l with
+    [] -> ()
+  | h::t -> f h; iter f t
+
+```
+
+val iter : ('a -&gt; 'b) -&gt; 'a list -&gt; unit = &lt;fun&gt;
+
+``` {.ocaml}
+let print_dict d 
+      iter print_dict_entry d;;
+
+
+let print_dict = 
+  iter print_dict_entry
+
+```
+
+``` {.ocaml}
+print_dict [(1, "one"); (2, "two"); (3, "three")];;
+
+```
+
+### Read from the keyboard
+
+``` {.ocaml}
+let rec read_dict () = 
+  let i = read_int () in
+    if  i = 0 then [] else
+      let name = read_line () in 
+        (i, name) :: read_dict ();;
+
+```
+
+Putting Things in Boxes
+=======================
+
+Pure function which have no side-effects. OCaml provides a construct
+known as a reference which is a box in which we can store a value. we
+build a reference using the built-in function ref of type a-&gt;a ref.
+
+``` {.ocaml}
+let x = ref 0;;
+
+```
+
+OCaml tell us that x is a **reference** of type **int ref** which
+current has contents , We can extract the current contents of a
+reference using the !operator, which has type a ref -&gt; a
+
+``` {.ocaml}
+let p = !x;;
+```
+
+``` {.ocaml}
+x := 50
+
+```
+
+``` {.ocaml}
+let q = !x;;
+
+```
+
+``` {.ocaml}
+p;;
+
+```
+
+:= operator has a type ref -&gt; a -&gt; unit, Which means update value
+
+Notice that p is unchanged.
+
+``` {.ocaml}
+let swap a b = 
+  let t = !a in 
+    a := !b; b := t
+
+```
+
+### Doing it again and again
+
+``` {.ocaml}
+for x = 1 to 5 do print_int x; print_newline () done 
+
+```
+
+1 2 3 4 5
+
+-   ``` {.example}
+    unit = ()
+    ```
+
+``` {.ocaml}
+let channe_statistics in_channel = 
+  let lines = ref 0 in
+    try
+      while true do
+        let line = input_line in_channel in 
+          lines := !lines + 1
+      done
+    with
+      End_of_file ->
+        print_string "There were";
+        print_int !lines;
+        print_string " lines.";
+        print_newline ();;
+
+let file_statistics name =
+  let channel = open_in name in 
+    try 
+      file_statistics_channel channel;
+      close_in channel
+    with
+      _ -> close_in channel
+
+```
+
+``` {.ocaml}
+(* Final version of word counter *)
+let print_histogram arr =
+  print_string "Character frequencies:";
+  print_newline ();
+  for x = 0 to 255 do
+    if arr.(x) > 0 then
+      begin
+        print_string "For character '";
+        print_char (char_of_int x);
+        print_string "' (character number ";
+        print_int x;
+        print_string ") the count is ";
+        print_int arr.(x);
+        print_string ".";
+        print_newline ()
+      end
+  done
+
+let channel_statistics in_channel =
+  let lines = ref 0
+  and characters = ref 0
+  and words = ref 0
+  and sentences = ref 0
+  and histogram = Array.make 256 0 in
+    try
+      while true do
+        let line = input_line in_channel in
+          lines := !lines + 1;
+          characters := !characters + String.length line;
+          String.iter
+            (fun c ->
+               match c with
+               '.' | '?' | '!' -> sentences := !sentences + 1
+               | ' ' -> words := !words + 1
+               | _ -> ())
+            line;
+          String.iter
+            (fun c ->
+              let i = int_of_char c in
+                histogram.(i) <- histogram.(i) + 1)
+            line
+      done
+    with
+      End_of_file ->
+        print_string "There were ";
+        print_int !lines;
+        print_string " lines, making up ";
+        print_int !characters;
+        print_string " characters with ";
+        print_int !words;
+        print_string " words in ";
+        print_int !sentences;
+        print_string " sentences.";
+        print_newline ();
+        print_histogram histogram
+
+let file_statistics name =
+  let channel = open_in name in
+    try
+      channel_statistics channel;
+      close_in channel
+    with
+      _ -> close_in channel
+```
+
+``` {.ocaml}
+file_statistics "gregor.txt"
+
+```
