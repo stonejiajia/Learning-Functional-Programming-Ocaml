@@ -1238,3 +1238,125 @@ file_statistics "gregor.txt"
 : Raised by primitive operation at file "pervasives.ml", line 385, characters 28-54
 : Called from file "//toplevel//", line 393, characters 16-28
 : Called from file "toplevel/toploop.ml", line 180, characters 17-56
+
+* The Other Number
+
+#+BEGIN_SRC ocaml
+1.5
+
+#+END_SRC
+
+#+RESULTS:
+: 1.5
+
+#+BEGIN_SRC ocaml
+6.
+
+#+END_SRC
+
+#+RESULTS:
+: 6
+
+#+BEGIN_SRC ocaml
+1.0 +. 2.5
+
+#+END_SRC
+
+#+RESULTS:
+: 3.5
+
+#+BEGIN_SRC ocaml
+1.0 /. 100000.
+
+#+END_SRC
+
+#+RESULTS:
+1e-05
+
+#+BEGIN_SRC ocaml
+max_float
+
+#+END_SRC
+
+#+RESULTS:
+
+1.7976931348623157e+308
+
+#+BEGIN_SRC ocaml
+sqrt 9.
+
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+#+BEGIN_SRC ocaml
+let make_vector (x0, y0) (x1, y1) = 
+  (x1-. x0, y1 -. y0)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let vector_length (x, y) = 
+  sqrt (x *. x +. y *. y)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+#+BEGIN_SRC ocaml
+let offset_point (x, y) (px, py) = 
+  (px +. x, py +. y)
+
+#+END_SRC
+
+#+RESULTS:
+: <fun>
+
+* The OCaml Standard Library
+
+#+BEGIN_SRC ocaml
+List.length [1; 2; 3; 4; 5];;
+
+#+END_SRC
+
+#+RESULTS:
+: 5
+
+#+BEGIN_SRC ocaml
+List.nth [1; 2; 4; 8; 16] 3
+
+#+END_SRC
+
+#+RESULTS:
+: 8
+
+
+* Building Bigger Programs
+
+
+#+BEGIN_SRC ocaml
+type stats = int * int * int * int;;
+
+let stats_from_channel _= (0, 0, 0, 0);;
+
+let stats_from_file filename = 
+  let  channel = open_in filename in
+    let result = stats_from_channel channel in 
+      close_in channel
+      result
+
+#+END_SRC
+
+#+RESULTS:
+: Characters 124-132:
+:         close_in channel
+:         ^^^^^^^^
+: Error: This function has type in_channel -> unit
+:        It is applied to too many arguments; maybe you forgot a `;'.
+
+
