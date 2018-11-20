@@ -1,0 +1,44 @@
+#+TITLE: Syntax
+
+* User-defined types
+
+type A = int;;
+
+A type identifier must start with a lowercase letter.
+
+type a = boolean;;
+
+type a, b = int;;
+Only one type identifier can be introduced in a type abbreviation.
+
+** SYNTAX FOR TYPE ANNOTATIONS  
+
+let f (int x) = x;;
+
+To assign the type int to the argument x, one must write (x : int)
+(the parenthesis are mandatory). A valid rewriting would be
+let f (x : int) = x;;.
+
+
+let f (x : int) :: int = x;;
+
+Only one colon is required to describe the return type of a function.
+A valid definition for a function of type int -> int would be:
+let f (x : int) : int = x;;.
+
+
+let f (x : int) : float = x;;
+
+There is no syntax error here; but we try to type the variable
+x once with int (as an argument) and once with float (as the returned value).
+
+#+BEGIN_SRC ocaml
+let f x y = if x then (y : int) else y + 1;;
+
+#+END_SRC
+
+
++ There is no syntax error here, any expression might be annotated; 
+  this a function of type bool -> int -> int.
++ With basic OCaml code, type annotations are only used for documentation
+   purposes. For that case, we usually annotate the parameter and not a sub-expression.
